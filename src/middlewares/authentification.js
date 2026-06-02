@@ -1,18 +1,32 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
-
-    const token = req.cookies.token;
+/**
+ * Middleware to check JWT and optionally require admin.
+ * Usage:
+ *  - auth() → normal authentication
+ *  - auth({ admin: true }) → only admins allowed
+ */
+const auth = (options = {}) => {
+  return (req, res, next) => {
+    const token = req.cookies.token; // or headers
 
     if (!token) {
-        return res.status(401).json({ message: "Access denied" });
+      return res.status(401).json({ message: "Access denied" });
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded; // { id, email, role }
+
+      if (options.admin && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      next();
     } catch (error) {
-        res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({ message: "Invalid token" });
     }
+  };
 };
+
+module.exports = auth;
