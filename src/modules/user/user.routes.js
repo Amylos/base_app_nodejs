@@ -6,6 +6,7 @@ const userController = require("./user.controller");
 const auth =
     require("../../middlewares/authentification");
 
+
 router.get(
     "/profile",
     auth(),

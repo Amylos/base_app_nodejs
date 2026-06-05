@@ -3,8 +3,6 @@ const router = express.Router();
 
 const authController = require("./auth.controller");
 const auth = require("../../middlewares/authentification");
-const csrfProtection = require("../../middlewares/csrf");
-
 
 // --- AUTH ROUTES ---
 
@@ -24,7 +22,6 @@ router.post(
 router.post(
     "/logout",
     auth(),
-    csrfProtection,
     authController.logout
 );
 
