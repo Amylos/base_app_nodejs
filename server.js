@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
-const usersRouter = require('./src/routes/users.route');
-const securityRouter = require('./src/routes/security.route');
+
+const authRouter = require("./src/modules/auth/auth.routes");
+const userRouter = require("./src/modules/user/user.routes");
 
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -22,8 +23,9 @@ app.use(cors({
 
 app.use(helmet());
 
-app.use('/api/users', usersRouter);
-app.use('/api/security', securityRouter);
+// ROUTES
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);
